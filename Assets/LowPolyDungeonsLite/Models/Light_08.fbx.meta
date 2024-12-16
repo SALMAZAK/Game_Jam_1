@@ -96,3 +96,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 177937
+  packageName: Low Poly Dungeons Lite
+  packageVersion: 1.11
+  assetPath: Assets/LowPolyDungeonsLite/Models/Light_08.fbx
+  uploadId: 692358
