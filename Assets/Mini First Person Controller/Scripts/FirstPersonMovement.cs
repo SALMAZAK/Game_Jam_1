@@ -2,70 +2,80 @@
 
 public class FirstPersonMovement : MonoBehaviour
 {
-    public float speed = 5;
+    public float walkSpeed = 5f; // سرعة المشي العادية
+    public float runSpeed = 9f; // سرعة الجري
+    public float climbSpeed = 3f; // سرعة التسلق
 
-    [Header("Running")]
-    public bool canRun = true;
-    public bool IsRunning { get; private set; }
-    public float runSpeed = 9;
-    public KeyCode runningKey = KeyCode.LeftShift;
-
-    [Header("Climbing")]
-    public float climbSpeed = 3f;
-    private bool isClimbing = false;
+    [Header("Controls")]
+    public KeyCode runningKey = KeyCode.LeftShift; // مفتاح الجري
 
     private Rigidbody rb;
+    private bool isClimbing = false; // حالة التسلق
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true; // تثبيت دوران المجسم
     }
 
     void FixedUpdate()
     {
         if (isClimbing)
         {
-            // حركة التسلق
-            float vertical = Input.GetAxis("Vertical");
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, vertical * climbSpeed, rb.linearVelocity.z);
+            HandleClimbing(); // حركة التسلق
         }
         else
         {
-            // الحركة العادية
-            IsRunning = canRun && Input.GetKey(runningKey);
-            float targetSpeed = IsRunning ? runSpeed : speed;
-            Vector2 targetVelocity = new Vector2(
-                Input.GetAxis("Horizontal") * targetSpeed,
-                Input.GetAxis("Vertical") * targetSpeed
-            );
-
-            rb.linearVelocity = transform.rotation * new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.y);
+            HandleMovement(); // حركة المشي والجري
         }
+    }
+
+    void HandleMovement()
+    {
+        // التحقق من الجري
+        bool isRunning = Input.GetKey(runningKey);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
+
+        // إدخال الحركة
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+
+        // حساب السرعة
+        Vector3 moveDirection = transform.forward * moveVertical + transform.right * moveHorizontal;
+        Vector3 targetVelocity = moveDirection.normalized * currentSpeed;
+
+        // الحفاظ على الجاذبية الطبيعية
+        targetVelocity.y = rb.linearVelocity.y;
+
+        // تطبيق الحركة
+        rb.linearVelocity = targetVelocity;
+    }
+
+    void HandleClimbing()
+    {
+        float vertical = Input.GetAxis("Vertical");
+
+        // حركة تسلق عمودية فقط
+        rb.linearVelocity = new Vector3(0, vertical * climbSpeed, 0);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // التحقق من دخول السلم
         if (other.CompareTag("Ladder"))
         {
             isClimbing = true;
             rb.useGravity = false; // تعطيل الجاذبية أثناء التسلق
+            rb.linearVelocity = Vector3.zero; // إعادة السرعة للصفر
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        // التحقق من مغادرة السلم
         if (other.CompareTag("Ladder"))
         {
             isClimbing = false;
-            rb.useGravity = true; // إعادة الجاذبية
+            rb.useGravity = true; // إعادة تفعيل الجاذبية
         }
-    }
-
-    public bool IsClimbing
-    {
-        get { return isClimbing; }
     }
 }
 
