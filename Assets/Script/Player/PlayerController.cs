@@ -5,15 +5,21 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float jumpForce = 15f;
+    public int maxHealth = 3;
 
     private Rigidbody rb;
     private bool isGrounded;
+    private int currentHealth;
+
+    private Animator animator; // مرجع للأنيميشن
     private HealthManager healthManager;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        healthManager = GetComponent<HealthManager>();
+        animator = GetComponent<Animator>();
+        healthManager = FindObjectOfType<HealthManager>();
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -27,26 +33,19 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        // الحصول على القيم من المحاور
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxis("Horizontal") * (Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed);
+        Vector3 velocity = new Vector3(moveHorizontal, rb.linearVelocity.y, 0);
+        rb.linearVelocity = velocity;
 
-        // اختيار السرعة بناءً على الجري أو المشي
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-
-        // تحديد الحركة بناءً على المحاور
-        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical) * currentSpeed;
-
-        // إضافة الحركة إلى اللاعب
-        Vector3 newVelocity = new Vector3(movement.x, rb.linearVelocity.y, movement.z);
-        rb.linearVelocity = newVelocity;
+        animator.SetFloat("Speed", Mathf.Abs(moveHorizontal));
     }
 
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.jumpSound);
+        AudioManager.Instance.PlaySound("JumpSound");
         isGrounded = false;
+        animator.SetTrigger("Jump");
     }
 
     void OnCollisionEnter(Collision collision)
@@ -58,8 +57,10 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             healthManager.TakeDamage();
+            AudioManager.Instance.PlaySound("DamageSound");
         }
     }
 }
+
 
 

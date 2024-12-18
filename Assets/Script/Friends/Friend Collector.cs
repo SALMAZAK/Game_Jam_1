@@ -8,10 +8,10 @@ public class FriendCollector : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log($"Collected Friend: {friendData.friendName}");
             FindObjectOfType<FriendManager>().CollectFriend(friendData);
-            AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.collectSound);
-            gameObject.SetActive(false); // اختفاء الصديق بعد جمعه
+            AudioManager.Instance.PlaySound("CollectSound");
+            gameObject.SetActive(false);
         }
     }
 }
+
