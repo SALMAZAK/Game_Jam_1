@@ -23,16 +23,7 @@ public class PlayerAnimation : MonoBehaviour
             animator.SetBool("Jump", false);
         }
 
-        // التحكم في حالة الهجوم
-        if (Input.GetMouseButtonDown(0)) // زر الفأرة الأيسر
-        {
-            animator.SetBool("Attack", true);
-        }
-        else
-        {
-            animator.SetBool("Attack", false);
-        }
-
+       
         // التحكم في السرعة (مثال على المشي والجري)
         float speed = Input.GetAxis("Vertical");
         animator.SetFloat("Speed", Mathf.Abs(speed));
