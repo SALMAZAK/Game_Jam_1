@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
+
 
 public class UIManager : MonoBehaviour
 {
+    
     public static UIManager Instance; // Singleton Instance
 
-    public Text scoreText;
+    public TextMeshProUGUI scoreText;
     public GameObject[] healthIcons;
     public GameObject winScreen;
 

@@ -2,65 +2,71 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float walkSpeed = 5f;
-    public float runSpeed = 10f;
-    public float jumpForce = 15f;
-    public int maxHealth = 3;
+    public float walkSpeed = 5f; // سرعة المشي
+    public float runSpeed = 9f; // سرعة الجري
+    public float jumpForce = 10f; // قوة القفز
+
+    [Header("Controls")]
+    public KeyCode runningKey = KeyCode.LeftShift; // مفتاح الجري
 
     private Rigidbody rb;
-    private bool isGrounded;
-    private int currentHealth;
+    private bool isGrounded = true; // التحقق من كون اللاعب على الأرض
 
-    private Animator animator; // مرجع للأنيميشن
-    private HealthManager healthManager;
-
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-        healthManager = FindObjectOfType<HealthManager>();
-        currentHealth = maxHealth;
+        rb.freezeRotation = true; // تثبيت دوران المجسم
+    }
+
+    void FixedUpdate()
+    {
+        HandleMovement(); // حركة المشي والجري
     }
 
     void Update()
     {
-        Move();
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            Jump();
+            Jump(); // تنفيذ القفز
         }
     }
 
-    void Move()
+    void HandleMovement()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal") * (Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed);
-        Vector3 velocity = new Vector3(moveHorizontal, rb.linearVelocity.y, 0);
-        rb.linearVelocity = velocity;
+        // التحقق من الجري
+        bool isRunning = Input.GetKey(runningKey);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
-        animator.SetFloat("Speed", Mathf.Abs(moveHorizontal));
+        // إدخال الحركة
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+
+        // حساب السرعة
+        Vector3 moveDirection = transform.forward * moveVertical + transform.right * moveHorizontal;
+        Vector3 targetVelocity = moveDirection.normalized * currentSpeed;
+
+        // الحفاظ على الجاذبية الطبيعية
+        targetVelocity.y = rb.linearVelocity.y;
+
+        // تطبيق الحركة
+        rb.linearVelocity = targetVelocity;
     }
 
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        AudioManager.Instance.PlaySound("JumpSound");
-        isGrounded = false;
-        animator.SetTrigger("Jump");
+        isGrounded = false; // تحديث حالة الأرض
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
-        }
-        else if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            healthManager.TakeDamage();
-            AudioManager.Instance.PlaySound("DamageSound");
+            isGrounded = true; // اللاعب عاد إلى الأرض
         }
     }
 }
+
 
 
 

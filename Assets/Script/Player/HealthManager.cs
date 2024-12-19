@@ -2,32 +2,30 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    public int maxHealth = 3;
+    public int maxHealth = 3; // الحد الأقصى للصحة
     private int currentHealth;
 
-    public UIManager uiManager;
-
-    void Start()
+    private void Start()
     {
         currentHealth = maxHealth;
-        uiManager.UpdateHealthUI(currentHealth);
+        UIManager.Instance.UpdateHealthUI(currentHealth); // تحديث واجهة الصحة عند بدء اللعبة
     }
 
     public void TakeDamage()
     {
         currentHealth--;
-        uiManager.UpdateHealthUI(currentHealth);
+        UIManager.Instance.UpdateHealthUI(currentHealth); // تحديث واجهة الصحة عند الضرر
 
         if (currentHealth <= 0)
         {
-            RespawnPlayer();
+            RespawnPlayer(); // استدعاء إعادة الإحياء
         }
     }
 
-    void RespawnPlayer()
+    private void RespawnPlayer()
     {
-        transform.position = Vector3.zero; // إعادة اللاعب لنقطة البداية
-        currentHealth = maxHealth;
-        uiManager.UpdateHealthUI(currentHealth);
+        transform.position = GameManager.Instance.GetSpawnPoint(); // إعادة تعيين الموقع
+        currentHealth = maxHealth; // إعادة ضبط الصحة
+        UIManager.Instance.UpdateHealthUI(currentHealth); // تحديث الصحة إلى الحالة الكاملة
     }
 }
