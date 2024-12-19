@@ -2,25 +2,35 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instance; // Singleton Instance
 
-    public AudioSource audioSource;
-    public AudioClip jumpSound, collectSound, damageSound, winSound;
+    public AudioSource audioSource; // مصدر الصوت الرئيسي
+    public AudioClip jumpSound; // صوت القفز
+    public AudioClip collectSound; // صوت جمع الأصدقاء
+    public AudioClip playerDamageSound; // صوت ضرر اللاعب
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // استمرار الكائن بين المشاهد
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public void PlaySound(string soundName)
+    public void PlaySoundEffect(AudioClip clip)
     {
-        switch (soundName)
+        if (clip != null && audioSource != null)
         {
-            case "JumpSound": audioSource.PlayOneShot(jumpSound); break;
-            case "CollectSound": audioSource.PlayOneShot(collectSound); break;
-            case "DamageSound": audioSource.PlayOneShot(damageSound); break;
-            case "WinSound": audioSource.PlayOneShot(winSound); break;
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogWarning("Audio clip or AudioSource is missing!");
         }
     }
 }

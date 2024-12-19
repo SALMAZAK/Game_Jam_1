@@ -8,13 +8,22 @@ public class SceneTransitionManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+        }
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadGameScene()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("Game"); // استبدل بـ اسم مشهد اللعبة
+    }
+
+    public void LoadMenuScene()
+    {
+        SceneManager.LoadScene("Main Menu"); // استبدل بـ اسم مشهد القائمة
     }
 }

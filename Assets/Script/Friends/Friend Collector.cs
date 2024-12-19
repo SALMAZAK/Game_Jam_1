@@ -2,16 +2,23 @@ using UnityEngine;
 
 public class FriendCollector : MonoBehaviour
 {
-    public FriendData friendData;
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            FindObjectOfType<FriendManager>().CollectFriend(friendData);
-            AudioManager.Instance.PlaySound("CollectSound");
+            // التأكد من أن FriendManager و AudioManager موجودان
+            if (FriendManager.Instance != null)
+            {
+                FriendManager.Instance.CollectFriend();
+            }
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.collectSound);
+            }
+
+            // إخفاء الصديق بعد جمعه
             gameObject.SetActive(false);
         }
     }
 }
-

@@ -6,63 +6,90 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 9f; // سرعة الجري
     public float jumpForce = 10f; // قوة القفز
 
-    [Header("Controls")]
-    public KeyCode runningKey = KeyCode.LeftShift; // مفتاح الجري
-
     private Rigidbody rb;
-    private bool isGrounded = true; // التحقق من كون اللاعب على الأرض
+    private bool isGrounded;
 
-    void Awake()
+    public Transform cameraTransform; // مرجع للكاميرا لتحريك اللاعب بالنسبة لها
+
+    private HealthManager healthManager;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; // تثبيت دوران المجسم
-    }
+        healthManager = GetComponent<HealthManager>();
 
-    void FixedUpdate()
-    {
-        HandleMovement(); // حركة المشي والجري
+        // إذا لم يتم تعيين الكاميرا في Inspector، يتم تعيينها تلقائيًا
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
     }
 
     void Update()
     {
+        Move();
+
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            Jump(); // تنفيذ القفز
+            Jump();
         }
     }
 
-    void HandleMovement()
+    void Move()
     {
-        // التحقق من الجري
-        bool isRunning = Input.GetKey(runningKey);
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
-
-        // إدخال الحركة
+        // إدخال الحركة من لوحة المفاتيح
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        // حساب السرعة
-        Vector3 moveDirection = transform.forward * moveVertical + transform.right * moveHorizontal;
-        Vector3 targetVelocity = moveDirection.normalized * currentSpeed;
+        // تحديد السرعة بناءً على حالة الجري
+        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-        // الحفاظ على الجاذبية الطبيعية
-        targetVelocity.y = rb.linearVelocity.y;
+        // تحويل اتجاه الحركة بناءً على اتجاه الكاميرا
+        Vector3 moveDirection = cameraTransform.forward * moveVertical + cameraTransform.right * moveHorizontal;
+        moveDirection.y = 0f; // تجاهل الحركة الرأسية
+        moveDirection.Normalize(); // التأكد من أن الحركة متزنة
 
-        // تطبيق الحركة
-        rb.linearVelocity = targetVelocity;
+        Vector3 velocity = moveDirection * currentSpeed;
+        velocity.y = rb.linearVelocity.y; // الحفاظ على السرعة الرأسية الحالية (الجاذبية)
+        rb.linearVelocity = velocity;
     }
 
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        isGrounded = false; // تحديث حالة الأرض
+
+        // تشغيل صوت القفز
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.jumpSound);
+        }
+
+        isGrounded = false;
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true; // اللاعب عاد إلى الأرض
+            isGrounded = true;
+        }
+        else if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage();
+        }
+    }
+
+    void TakeDamage()
+    {
+        if (healthManager != null)
+        {
+            healthManager.TakeDamage(1);
+        }
+
+        // تشغيل صوت الضرر
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.playerDamageSound);
         }
     }
 }

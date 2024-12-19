@@ -1,22 +1,31 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class FriendManager : MonoBehaviour
 {
-    public List<FriendData> collectedFriends = new List<FriendData>();
-    public UIManager uiManager;
+    public static FriendManager Instance;
+    public int totalFriends = 5;
+    private int collectedFriends = 0;
 
-    public void CollectFriend(FriendData friend)
+    private void Awake()
     {
-        if (!collectedFriends.Contains(friend))
+        if (Instance == null)
         {
-            collectedFriends.Add(friend);
-            uiManager.UpdateScoreUI(collectedFriends.Count);
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
-            if (collectedFriends.Count >= 5)
-            {
-                uiManager.ShowWinScreen();
-            }
+    public void CollectFriend()
+    {
+        collectedFriends++;
+        UIManager.Instance.UpdateScoreUI(collectedFriends);
+
+        if (collectedFriends >= totalFriends)
+        {
+            GameManager.Instance.WinGame();
         }
     }
 }

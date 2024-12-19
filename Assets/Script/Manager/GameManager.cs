@@ -8,9 +8,13 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+        }
     }
 
     public Vector3 GetSpawnPoint()
@@ -20,6 +24,6 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
     {
-        UIManager.Instance.ShowWinScreen(); // تأكد من مطابقة اسم الدالة
+        UIManager.Instance.ShowWinScreen();
     }
 }
