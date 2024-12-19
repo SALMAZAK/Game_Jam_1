@@ -4,9 +4,13 @@ public class FriendManager : MonoBehaviour
 {
     public static FriendManager Instance;
 
-    public int totalFriends = 5; // العدد الإجمالي للأصدقاء
-    private int collectedFriends = 0; // عدد الأصدقاء الذين تم جمعهم
-    public Transform friendTable; // مكان ظهور الأصدقاء عند جمعهم
+    public int totalFriends = 10; 
+    private int collectedFriends = 0;
+
+    public ParticleSystem fireworksEffect; 
+    public AudioClip fireworksSound; 
+
+    private bool hasShownFireworks = false; 
 
     private void Awake()
     {
@@ -20,12 +24,24 @@ public class FriendManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // إيقاف تأثير الألعاب النارية في البداية
+        if (fireworksEffect != null)
+        {
+            fireworksEffect.Stop();
+        }
+    }
+
     private void Update()
     {
-        // اختصار لجمع جميع الأصدقاء بالضغط على مفتاح "G"
-        if (Input.GetKeyDown(KeyCode.G))
+        // اختبار بالاختصار (L) لجمع كل الأصدقاء
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            CollectAllFriends();
+            Debug.Log("Test Mode: All friends collected!");
+            collectedFriends = totalFriends; 
+            UIManager.Instance.UpdateScoreUI(collectedFriends);
+            CheckAllFriendsCollected();
         }
     }
 
@@ -34,26 +50,37 @@ public class FriendManager : MonoBehaviour
         collectedFriends++;
         UIManager.Instance.UpdateScoreUI(collectedFriends);
 
-        if (collectedFriends >= totalFriends)
+        // تحقق إذا تم جمع جميع الأصدقاء
+        CheckAllFriendsCollected();
+    }
+
+    private void CheckAllFriendsCollected()
+    {
+        if (collectedFriends >= totalFriends && !hasShownFireworks)
         {
-            Debug.Log("All friends collected!");
-            TriggerWinSequence();
+            ShowFireworks();
         }
     }
 
-    public void CollectAllFriends()
+    private void ShowFireworks()
     {
-        collectedFriends = totalFriends;
-        UIManager.Instance.UpdateScoreUI(collectedFriends);
-        TriggerWinSequence();
-    }
+        if (hasShownFireworks) return; 
+        hasShownFireworks = true;
 
-    private void TriggerWinSequence()
-    {
-        UIManager.Instance.ShowWinScreen();
-        // إضافة تأثير الألعاب النارية هنا
-        // يمكن تشغيل صوت أو تفعيل أي Animation خاص بالفوز
-        Invoke("ReturnToMenu", 20f); // العودة للقائمة بعد 20 ثانية
+        // تشغيل الألعاب النارية
+        if (fireworksEffect != null)
+        {
+            fireworksEffect.Play();
+        }
+
+        // تشغيل صوت الألعاب النارية
+        if (AudioManager.Instance != null && fireworksSound != null)
+        {
+            AudioManager.Instance.PlaySoundEffect(fireworksSound);
+        }
+
+        // الانتقال إلى القائمة بعد 15 ثانية
+        Invoke(nameof(ReturnToMenu), 15f);
     }
 
     private void ReturnToMenu()

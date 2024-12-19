@@ -24,7 +24,6 @@ public class SceneTransitionManager : MonoBehaviour
         {
             AudioManager.Instance.PlayBackgroundMusic();
         }
-
         
         SceneManager.LoadScene("Game");
     }

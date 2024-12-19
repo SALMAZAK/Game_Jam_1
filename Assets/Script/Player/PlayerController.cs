@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Ladder"))
         {
             isClimbing = false;
-            rb.useGravity = true; // إعادة تفعيل الجاذبية
+            rb.useGravity = true; 
         }
     }
 

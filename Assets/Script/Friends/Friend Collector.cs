@@ -2,23 +2,33 @@ using UnityEngine;
 
 public class FriendCollector : MonoBehaviour
 {
+    public Transform tableTransform; 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // التأكد من أن FriendManager و AudioManager موجودان
-            if (FriendManager.Instance != null)
-            {
-                FriendManager.Instance.CollectFriend();
-            }
+           
+            MoveToTable();
 
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.collectSound);
-            }
+           
+            FriendManager.Instance.CollectFriend();
 
-            // إخفاء الصديق بعد جمعه
-            gameObject.SetActive(false);
+            
+            AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.collectSound);
+        }
+    }
+
+    private void MoveToTable()
+    {
+        if (tableTransform != null)
+        {
+            transform.position = tableTransform.position; 
+            gameObject.SetActive(false); 
+        }
+        else
+        {
+            Debug.LogWarning("Table Transform not assigned!");
         }
     }
 }
