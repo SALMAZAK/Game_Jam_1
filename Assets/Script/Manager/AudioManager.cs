@@ -4,17 +4,18 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance; // Singleton Instance
 
-    public AudioSource audioSource; // مصدر الصوت الرئيسي
-    public AudioClip jumpSound; // صوت القفز
-    public AudioClip collectSound; // صوت جمع الأصدقاء
-    public AudioClip playerDamageSound; // صوت ضرر اللاعب
+    public AudioSource audioSource; 
+    public AudioClip jumpSound; 
+    public AudioClip collectSound; 
+    public AudioClip playerDamageSound; 
+    public AudioClip backgroundMusic; 
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // استمرار الكائن بين المشاهد
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
@@ -31,6 +32,20 @@ public class AudioManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Audio clip or AudioSource is missing!");
+        }
+    }
+
+    public void PlayBackgroundMusic()
+    {
+        if (backgroundMusic != null && audioSource != null)
+        {
+            audioSource.clip = backgroundMusic;
+            audioSource.loop = true; 
+            audioSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning("Background music or AudioSource is missing!");
         }
     }
 }

@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Friends Collected:{score}/5";
+            scoreText.text = $"Friends Collected:{score}/10";
         }
     }
 
@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
     {
         if (healthText != null)
         {
-            healthText.text = $"Lives: {currentHealth}";
+            healthText.text = $"{currentHealth}";
         }
     }
 

@@ -19,11 +19,19 @@ public class SceneTransitionManager : MonoBehaviour
 
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("Game"); // استبدل بـ اسم مشهد اللعبة
+        
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayBackgroundMusic();
+        }
+
+        
+        SceneManager.LoadScene("Game");
     }
 
     public void LoadMenuScene()
     {
-        SceneManager.LoadScene("Main Menu"); // استبدل بـ اسم مشهد القائمة
+        
+        SceneManager.LoadScene("Main Menu");
     }
 }

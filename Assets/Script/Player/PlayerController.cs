@@ -5,12 +5,13 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f; // سرعة المشي
     public float runSpeed = 9f; // سرعة الجري
     public float jumpForce = 10f; // قوة القفز
+    public float climbSpeed = 3f; // سرعة التسلق
 
     private Rigidbody rb;
     private bool isGrounded;
+    private bool isClimbing = false; // حالة التسلق
 
     public Transform cameraTransform; // مرجع للكاميرا لتحريك اللاعب بالنسبة لها
-
     private HealthManager healthManager;
 
     void Start()
@@ -27,11 +28,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Move();
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isClimbing)
         {
-            Jump();
+            Climb();
+        }
+        else
+        {
+            Move();
+
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                Jump();
+            }
         }
     }
 
@@ -67,6 +75,15 @@ public class PlayerController : MonoBehaviour
         isGrounded = false;
     }
 
+    void Climb()
+    {
+        float vertical = Input.GetAxis("Vertical");
+
+        // حركة تسلق عمودية فقط
+        Vector3 climbVelocity = new Vector3(0, vertical * climbSpeed, 0);
+        rb.velocity = climbVelocity;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -76,6 +93,25 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             TakeDamage();
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Ladder"))
+        {
+            isClimbing = true;
+            rb.useGravity = false; // تعطيل الجاذبية أثناء التسلق
+            rb.velocity = Vector3.zero; // إعادة تعيين السرعة
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Ladder"))
+        {
+            isClimbing = false;
+            rb.useGravity = true; // إعادة تفعيل الجاذبية
         }
     }
 
@@ -93,6 +129,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
+
 
 
 
