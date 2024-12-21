@@ -539,9 +539,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 311767993}
-  jumpSound: {fileID: 0}
-  collectSound: {fileID: 0}
-  playerDamageSound: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: 0b795108846617d4190caa50bd459348, type: 3}
+  collectSound: {fileID: 8300000, guid: ddcc56e2643809e48978df78b2924190, type: 3}
+  playerDamageSound: {fileID: 8300000, guid: 25febd929c152704b8654f5d1e925f5c, type: 3}
   backgroundMusic: {fileID: 8300000, guid: c75b26c067b334948a86c936fe318654, type: 3}
 --- !u!4 &523804214
 Transform:
