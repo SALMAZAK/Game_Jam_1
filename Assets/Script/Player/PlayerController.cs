@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
         // حركة تسلق عمودية فقط
         Vector3 climbVelocity = new Vector3(0, vertical * climbSpeed, 0);
-        rb.velocity = climbVelocity;
+        rb.linearVelocity = climbVelocity;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
         {
             isClimbing = true;
             rb.useGravity = false; // تعطيل الجاذبية أثناء التسلق
-            rb.velocity = Vector3.zero; // إعادة تعيين السرعة
+            rb.linearVelocity = Vector3.zero; // إعادة تعيين السرعة
         }
     }
 

@@ -6,12 +6,12 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    public TextMeshProUGUI scoreText; // نص يعرض عدد الأصدقاء
-    public TextMeshProUGUI healthText; // نص يعرض عدد الأرواح
-    public GameObject winScreen; // شاشة الفوز
+    public TextMeshProUGUI scoreText; 
+    public TextMeshProUGUI healthText; 
+    public GameObject winScreen; 
 
-    private int initialScore = 0; // القيمة الأولية لعدد الأصدقاء
-    private int initialHealth = 3; // القيمة الأولية لعدد الأرواح
+    private int initialScore = 0; 
+    private int initialHealth = 3; 
 
     private void Awake()
     {
@@ -27,7 +27,11 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        // تحديث النصوص بالقيم الأولية عند بدء اللعبة
+        if (winScreen != null)
+        {
+            winScreen.SetActive(false); // إخفاء شاشة الفوز عند بدء اللعبة
+        }
+
         UpdateScoreUI(initialScore);
         UpdateHealthUI(initialHealth);
     }
@@ -36,7 +40,7 @@ public class UIManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Friends Collected:{score}/10";
+            scoreText.text = $"Friends Collected: {score}/10";
         }
     }
 
@@ -52,7 +56,7 @@ public class UIManager : MonoBehaviour
     {
         if (winScreen != null)
         {
-            winScreen.SetActive(true);
+            winScreen.SetActive(true); // عرض شاشة الفوز
         }
     }
 }

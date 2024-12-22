@@ -79,8 +79,8 @@ public class FriendManager : MonoBehaviour
             AudioManager.Instance.PlaySoundEffect(fireworksSound);
         }
 
-        // الانتقال إلى القائمة بعد 15 ثانية
-        Invoke(nameof(ReturnToMenu), 15f);
+       
+        Invoke(nameof(ReturnToMenu), 10f);
     }
 
     private void ReturnToMenu()
