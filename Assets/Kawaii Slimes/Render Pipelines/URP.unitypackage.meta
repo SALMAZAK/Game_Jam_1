@@ -5,3 +5,13 @@ DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
+=======
+AssetOrigin:
+  serializedVersion: 1
+  productId: 221172
+  packageName: Kawaii Slimes
+  packageVersion: 1.01
+  assetPath: Assets/Kawaii Slimes/Render Pipelines/URP.unitypackage
+  uploadId: 593187
+>>>>>>> ea35d90e56e4d3895038c9b5ed920ceb0fccb3cb
