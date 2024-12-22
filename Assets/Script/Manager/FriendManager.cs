@@ -42,9 +42,7 @@ public class FriendManager : MonoBehaviour
             collectedFriends = totalFriends;
             UIManager.Instance.UpdateScoreUI(collectedFriends);
 
-            ShowFireworks();
-            GameManager.Instance.ReturnPlayerToSpawn();
-            UIManager.Instance.ShowWinScreen();
+            TriggerAllEvents();
         }
     }
 
@@ -60,11 +58,11 @@ public class FriendManager : MonoBehaviour
     {
         if (collectedFriends >= totalFriends && !hasShownFireworks)
         {
-            ShowFireworks();
+            TriggerAllEvents();
         }
     }
 
-    private void ShowFireworks()
+    private void TriggerAllEvents()
     {
         if (hasShownFireworks) return; 
         hasShownFireworks = true;
@@ -78,6 +76,10 @@ public class FriendManager : MonoBehaviour
         {
             AudioManager.Instance.PlaySoundEffect(fireworksSound);
         }
+
+        UIManager.Instance.ShowWinScreen();
+
+        GameManager.Instance.ReturnPlayerToSpawn();
 
         Invoke(nameof(ReturnToMenu), 10f);
     }
