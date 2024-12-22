@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
     {
-        UIManager.Instance.ShowWinScreen();
-        ReturnPlayerToSpawn();
+        UIManager.Instance.ShowWinScreen(); // عرض رسالة الفوز
+        ReturnPlayerToSpawn(); // إعادة اللاعب لنقطة الرسبون
     }
 }

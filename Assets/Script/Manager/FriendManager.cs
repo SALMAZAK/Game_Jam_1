@@ -26,7 +26,6 @@ public class FriendManager : MonoBehaviour
 
     private void Start()
     {
-        // إيقاف تأثير الألعاب النارية في البداية
         if (fireworksEffect != null)
         {
             fireworksEffect.Stop();
@@ -35,13 +34,17 @@ public class FriendManager : MonoBehaviour
 
     private void Update()
     {
-        // اختبار بالاختصار (L) لجمع كل الأصدقاء
+        // اختبار بالاختصار (L) لتشغيل جميع الأحداث
         if (Input.GetKeyDown(KeyCode.L))
         {
-            Debug.Log("Test Mode: All friends collected!");
-            collectedFriends = totalFriends; 
+            Debug.Log("Test Mode: Trigger all actions!");
+
+            collectedFriends = totalFriends;
             UIManager.Instance.UpdateScoreUI(collectedFriends);
-            CheckAllFriendsCollected();
+
+            ShowFireworks();
+            GameManager.Instance.ReturnPlayerToSpawn();
+            UIManager.Instance.ShowWinScreen();
         }
     }
 
@@ -50,7 +53,6 @@ public class FriendManager : MonoBehaviour
         collectedFriends++;
         UIManager.Instance.UpdateScoreUI(collectedFriends);
 
-        // تحقق إذا تم جمع جميع الأصدقاء
         CheckAllFriendsCollected();
     }
 
@@ -67,19 +69,16 @@ public class FriendManager : MonoBehaviour
         if (hasShownFireworks) return; 
         hasShownFireworks = true;
 
-        // تشغيل الألعاب النارية
         if (fireworksEffect != null)
         {
             fireworksEffect.Play();
         }
 
-        // تشغيل صوت الألعاب النارية
         if (AudioManager.Instance != null && fireworksSound != null)
         {
             AudioManager.Instance.PlaySoundEffect(fireworksSound);
         }
 
-       
         Invoke(nameof(ReturnToMenu), 10f);
     }
 

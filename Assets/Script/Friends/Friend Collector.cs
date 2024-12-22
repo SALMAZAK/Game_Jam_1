@@ -8,15 +8,14 @@ public class FriendCollector : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-
-            MoveToT
-
-
+            // إبلاغ FriendManager بأن اللاعب جمع صديقًا
             FriendManager.Instance.CollectFriend();
 
-
+            // تشغيل صوت الجمع
             AudioManager.Instance.PlaySoundEffect(AudioManager.Instance.collectSound);
+
+            // إخفاء الصديق
+            gameObject.SetActive(false);
         }
     }
-
 }
