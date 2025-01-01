@@ -45,17 +45,17 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        // إدخال الحركة من لوحة المفاتيح
+        
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        // تحديد السرعة بناءً على حالة الجري
+        
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-        // تحويل اتجاه الحركة بناءً على اتجاه الكاميرا
+        
         Vector3 moveDirection = cameraTransform.forward * moveVertical + cameraTransform.right * moveHorizontal;
-        moveDirection.y = 0f; // تجاهل الحركة الرأسية
-        moveDirection.Normalize(); // التأكد من أن الحركة متزنة
+        moveDirection.y = 0f; 
+        moveDirection.Normalize(); 
 
         Vector3 velocity = moveDirection * currentSpeed;
         velocity.y = rb.linearVelocity.y; // الحفاظ على السرعة الرأسية الحالية (الجاذبية)
