@@ -1,17 +1,14 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    public TextMeshProUGUI scoreText; 
-    public TextMeshProUGUI healthText; 
-    public GameObject winScreen; 
-
-    private int initialScore = 0; 
-    private int initialHealth = 3; 
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI healthText;
+    public GameObject winScreen;
+    public GameObject loseScreen;
 
     private void Awake()
     {
@@ -29,11 +26,16 @@ public class UIManager : MonoBehaviour
     {
         if (winScreen != null)
         {
-            winScreen.SetActive(false); // إخفاء شاشة الفوز عند بدء اللعبة
+            winScreen.SetActive(false);
         }
 
-        UpdateScoreUI(initialScore);
-        UpdateHealthUI(initialHealth);
+        if (loseScreen != null)
+        {
+            loseScreen.SetActive(false);
+        }
+
+        UpdateScoreUI(0);
+        UpdateHealthUI(3);
     }
 
     public void UpdateScoreUI(int score)
@@ -56,7 +58,15 @@ public class UIManager : MonoBehaviour
     {
         if (winScreen != null)
         {
-            winScreen.SetActive(true); // عرض شاشة الفوز
+            winScreen.SetActive(true);
+        }
+    }
+
+    public void ShowLoseScreen()
+    {
+        if (loseScreen != null)
+        {
+            loseScreen.SetActive(true);
         }
     }
 }

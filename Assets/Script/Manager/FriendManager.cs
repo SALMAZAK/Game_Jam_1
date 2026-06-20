@@ -4,13 +4,13 @@ public class FriendManager : MonoBehaviour
 {
     public static FriendManager Instance;
 
-    public int totalFriends = 10; 
+    public int totalFriends = 10;
     private int collectedFriends = 0;
 
-    public ParticleSystem fireworksEffect; 
-    public AudioClip fireworksSound; 
+    public ParticleSystem fireworksEffect;
+    public AudioClip fireworksSound;
 
-    private bool hasShownFireworks = false; 
+    private bool hasShownFireworks = false;
 
     private void Awake()
     {
@@ -34,22 +34,28 @@ public class FriendManager : MonoBehaviour
 
     private void Update()
     {
-        // اختبار بالاختصار (L) لتشغيل جميع الأحداث
         if (Input.GetKeyDown(KeyCode.L))
         {
             Debug.Log("Test Mode: Trigger all actions!");
-
             collectedFriends = totalFriends;
-            UIManager.Instance.UpdateScoreUI(collectedFriends);
-
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateScoreUI(collectedFriends);
+            }
             TriggerAllEvents();
         }
     }
 
     public void CollectFriend()
     {
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+
         collectedFriends++;
-        UIManager.Instance.UpdateScoreUI(collectedFriends);
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateScoreUI(collectedFriends);
+        }
 
         CheckAllFriendsCollected();
     }
@@ -64,7 +70,7 @@ public class FriendManager : MonoBehaviour
 
     private void TriggerAllEvents()
     {
-        if (hasShownFireworks) return; 
+        if (hasShownFireworks) return;
         hasShownFireworks = true;
 
         if (fireworksEffect != null)
@@ -77,15 +83,19 @@ public class FriendManager : MonoBehaviour
             AudioManager.Instance.PlaySoundEffect(fireworksSound);
         }
 
-        UIManager.Instance.ShowWinScreen();
-
-        GameManager.Instance.ReturnPlayerToSpawn();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.WinGame();
+        }
 
         Invoke(nameof(ReturnToMenu), 10f);
     }
 
     private void ReturnToMenu()
     {
-        SceneTransitionManager.Instance.LoadMenuScene();
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadMenuScene();
+        }
     }
 }

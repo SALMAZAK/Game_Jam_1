@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
     public GameObject player;
 
+    [HideInInspector]
+    public bool isGameOver = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -16,11 +19,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    public Vector3 GetSpawnPoint()
-    {
-        return spawnPoint.position;
     }
 
     public void ReturnPlayerToSpawn()
@@ -36,9 +34,52 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void GameOver()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowLoseScreen();
+        }
+
+        if (player != null)
+        {
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+            }
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Invoke(nameof(ReturnToMenu), 5f);
+    }
+
     public void WinGame()
     {
-        UIManager.Instance.ShowWinScreen(); // عرض رسالة الفوز
-        ReturnPlayerToSpawn(); // إعادة اللاعب لنقطة الرسبون
+        if (isGameOver) return;
+        isGameOver = true;
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowWinScreen();
+        }
+
+        ReturnPlayerToSpawn();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    private void ReturnToMenu()
+    {
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadMenuScene();
+        }
     }
 }

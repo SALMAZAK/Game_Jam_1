@@ -4,28 +4,35 @@ public class HealthManager : MonoBehaviour
 {
     public int maxHealth = 3;
     private int currentHealth;
+    private bool isDead = false;
 
     private void Start()
     {
         currentHealth = maxHealth;
-        UIManager.Instance.UpdateHealthUI(currentHealth);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHealthUI(currentHealth);
+        }
     }
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
-        UIManager.Instance.UpdateHealthUI(currentHealth);
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHealthUI(currentHealth);
+        }
 
         if (currentHealth <= 0)
         {
-            Respawn();
+            isDead = true;
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
-    }
-
-    private void Respawn()
-    {
-        transform.position = GameManager.Instance.GetSpawnPoint();
-        currentHealth = maxHealth;
-        UIManager.Instance.UpdateHealthUI(currentHealth);
     }
 }
